@@ -8,7 +8,12 @@ import javax.annotation.Nonnull;
 import manglar.soporte.model.Ticket;
 import manglar.soporte.model.TicketStatus;
 import manglar.soporte.services.TicketsService;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+@Component(ListAllCommand.NAME)
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @Parameters(commandDescription = "Listar todos los tickets")
 public class ListAllCommand implements CliCommand {
 

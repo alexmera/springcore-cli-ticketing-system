@@ -7,7 +7,12 @@ import javax.annotation.Nonnull;
 import manglar.soporte.model.Resolution;
 import manglar.soporte.model.Ticket;
 import manglar.soporte.services.TicketsService;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+@Component(CloseCommand.NAME)
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @Parameters(commandDescription = "Cerrar un ticket")
 public class CloseCommand implements CliCommand {
 

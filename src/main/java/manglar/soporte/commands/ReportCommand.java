@@ -11,8 +11,13 @@ import manglar.soporte.model.TicketStatus;
 import manglar.soporte.model.value.TicketValue;
 import manglar.soporte.services.IdGenerator;
 import manglar.soporte.services.TicketsService;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+@Component(ReportCommand.NAME)
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @Parameters(commandDescription = "Reportar un ticket")
 public class ReportCommand implements CliCommand {
 
