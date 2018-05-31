@@ -42,7 +42,11 @@ public class ListAllCommand implements CliCommand {
   @Override
   public String runCommand() {
     System.out.println(">> Running command: " + this.toString());
-    List<Ticket> tickets = ticketsService.all();
+
+    List<Ticket> tickets = status != null
+        ? ticketsService.find(ticket -> ticket.getStatus().equals(status))
+        : ticketsService.all();
+
     StringBuilder out = new StringBuilder();
     tickets.forEach(t -> out.append(t.toString()).append("\n"));
     return out.toString();
