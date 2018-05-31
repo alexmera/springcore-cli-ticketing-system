@@ -11,7 +11,7 @@ public interface Ticket {
 
   TicketStatus getStatus();
 
-  Resolution getClosedAs();
+  Optional<Resolution> getClosedAs();
 
   Optional<String> getSolution();
 

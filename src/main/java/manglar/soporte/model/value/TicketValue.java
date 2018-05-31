@@ -43,7 +43,7 @@ public final class TicketValue implements Ticket {
         .id(other.getId())
         .subject(other.getSubject())
         .status(other.getStatus())
-        .closedAs(other.getClosedAs())
+        .closedAs(other.getClosedAs().isPresent() ? other.getClosedAs().get() : null)
         .solution(other.getSolution().isPresent() ? other.getSolution().get() : null)
         .creationDate(other.getCreationDate())
         .closingDate(other.getClosingDate().isPresent() ? other.getClosingDate().get() : null)
@@ -58,6 +58,11 @@ public final class TicketValue implements Ticket {
   @Override
   public Optional<LocalDateTime> getClosingDate() {
     return Optional.ofNullable(closingDate);
+  }
+
+  @Override
+  public Optional<Resolution> getClosedAs() {
+    return Optional.ofNullable(closedAs);
   }
 
 }
