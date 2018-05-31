@@ -53,7 +53,7 @@ public class ReportCommand implements CliCommand {
 
   @Override
   public String runCommand() {
-    System.out.println("Running command report...");
+    System.out.println(">> Running command: " + this.toString());
     Ticket ticket = new TicketValue(
         idGenerator.nextId(),
         subjectAsText(),
@@ -63,6 +63,7 @@ public class ReportCommand implements CliCommand {
         LocalDateTime.now(),
         null
     );
+    ticketsService.report(ticket);
     return "Ticket created: " + ticket.toString();
   }
 
