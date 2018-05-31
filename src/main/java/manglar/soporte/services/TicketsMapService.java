@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import manglar.soporte.model.Resolution;
 import manglar.soporte.model.Ticket;
 import manglar.soporte.model.TicketStatus;
@@ -61,7 +63,8 @@ public class TicketsMapService implements TicketsService {
         .closingDate(LocalDateTime.now())
         .build();
     if (ticket.getClosedAs().equals(Resolution.SOLVED) && !ticket.getSolution().isPresent()) {
-      throw new IllegalStateException("Si el ticket se cierra SOLVED debe tener una solución asignada");
+      throw new IllegalStateException(
+          "Si el ticket se cierra SOLVED debe tener una solución asignada");
     }
     return modify(ticket);
   }
@@ -76,5 +79,10 @@ public class TicketsMapService implements TicketsService {
         .closingDate(LocalDateTime.now())
         .build();
     return modify(ticket);
+  }
+
+  @Override
+  public List<Ticket> find(Predicate<Ticket> predicate) {
+    return persistence.values().stream().filter(predicate).collect(Collectors.toList());
   }
 }

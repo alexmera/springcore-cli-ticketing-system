@@ -3,6 +3,7 @@ package manglar.soporte.services;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import manglar.soporte.model.Resolution;
 import manglar.soporte.model.Ticket;
 import manglar.soporte.model.TicketStatus;
@@ -67,5 +68,10 @@ public class TicketsDaoBasedService implements TicketsService {
         .closingDate(LocalDateTime.now())
         .build();
     return modify(ticket);
+  }
+
+  @Override
+  public List<Ticket> find(Predicate<Ticket> predicate) {
+    return ticketDao.find(predicate);
   }
 }
