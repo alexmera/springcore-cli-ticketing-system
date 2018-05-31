@@ -1,42 +1,45 @@
 package manglar.soporte;
 
-import java.time.LocalDateTime;
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.MissingCommandException;
+import java.util.Scanner;
+import manglar.soporte.commands.CommandExecutor;
 import manglar.soporte.config.AppConfig;
-import manglar.soporte.model.TicketStatus;
-import manglar.soporte.model.value.TicketValue;
-import manglar.soporte.services.TicketsService;
+import manglar.soporte.config.CommandsConfig;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class App {
 
   public static void main(String[] args) {
+    Scanner scanner = new Scanner(System.in);
     ApplicationContext applicationContext = new AnnotationConfigApplicationContext(
-        AppConfig.class
+        AppConfig.class,
+        CommandsConfig.class
     );
 
-    TicketsService service = applicationContext.getBean(TicketsService.class);
+    while (true) {
+      CommandExecutor executor = applicationContext.getBean(CommandExecutor.class);
+      JCommander.Builder builder = JCommander.newBuilder();
+      executor.commands()
+          .forEach(cliCommand -> builder.addCommand(cliCommand.getCommandName(), cliCommand));
+      JCommander commander = builder.build();
 
-    service.report(new TicketValue(
-        1L,
-        "Error en Java",
-        TicketStatus.OPEN,
-        null,
-        null,
-        LocalDateTime.now(),
-        null
-    ));
+      System.out.print("$ > ");
+      String input = scanner.nextLine().trim();
 
-    service.report(new TicketValue(
-        2L,
-        "Error en Java 2",
-        TicketStatus.OPEN,
-        null,
-        null,
-        LocalDateTime.now(),
-        null
-    ));
+      if (input.equals("exit")) {
+        System.out.println("Bye!");
+        break;
+      }
 
-    service.all().forEach(System.out::println);
+      try {
+        commander.parse(input.split(" "));
+        executor.execute(commander.getParsedCommand());
+      } catch (MissingCommandException e) {
+        System.out.println("Invalid command, try again");
+        commander.usage();
+      }
+    }
   }
 }
