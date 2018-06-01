@@ -7,17 +7,23 @@ import java.util.Scanner;
 import manglar.soporte.commands.CommandExecutor;
 import manglar.soporte.config.AppConfig;
 import manglar.soporte.config.CommandsConfig;
-import org.springframework.context.ApplicationContext;
+import manglar.soporte.config.JacksonConfig;
+import manglar.soporte.config.PersistenceConfig;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class App {
 
   public static void main(String[] args) {
     Scanner scanner = new Scanner(System.in);
-    ApplicationContext applicationContext = new AnnotationConfigApplicationContext(
+    AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext(
         AppConfig.class,
-        CommandsConfig.class
+        CommandsConfig.class,
+        PersistenceConfig.class,
+        JacksonConfig.class
     );
+
+    // implicit shutdown hook
+    applicationContext.registerShutdownHook();
 
     while (true) {
       CommandExecutor executor = applicationContext.getBean(CommandExecutor.class);
@@ -44,5 +50,7 @@ public class App {
         System.out.println(pe.getMessage());
       }
     }
+    // or explicit close method
+    applicationContext.close();
   }
 }

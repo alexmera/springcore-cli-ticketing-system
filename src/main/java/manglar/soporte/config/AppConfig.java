@@ -1,7 +1,9 @@
 package manglar.soporte.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.concurrent.ConcurrentMap;
 import manglar.soporte.repositories.TicketDao;
-import manglar.soporte.repositories.TicketMemoryDao;
+import manglar.soporte.repositories.TicketPersistedDao;
 import manglar.soporte.services.IdGenerator;
 import manglar.soporte.services.LongIdGenerator;
 import manglar.soporte.services.TicketsDaoBasedService;
@@ -18,12 +20,12 @@ public class AppConfig {
   }
 
   @Bean
-  public TicketDao ticketDao() {
-    return new TicketMemoryDao();
+  public TicketDao ticketDao(ConcurrentMap<Long, String> tickets, ObjectMapper objectMapper) {
+    return new TicketPersistedDao(tickets, objectMapper);
   }
 
   @Bean
-  public TicketsService ticketsService() {
-    return new TicketsDaoBasedService(ticketDao());
+  public TicketsService ticketsService(TicketDao ticketDao) {
+    return new TicketsDaoBasedService(ticketDao);
   }
 }

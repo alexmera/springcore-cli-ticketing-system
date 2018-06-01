@@ -1,5 +1,7 @@
 package manglar.soporte.model.value;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.Builder;
@@ -26,9 +28,23 @@ public final class TicketValue implements Ticket {
 
   private LocalDateTime closingDate;
 
-  public TicketValue(Long id, String subject, TicketStatus status,
-      Resolution closedAs, String solution, LocalDateTime creationDate,
-      LocalDateTime closingDate) {
+  @JsonCreator
+  public TicketValue(
+      @JsonProperty("id")
+          Long id,
+      @JsonProperty("subject")
+          String subject,
+      @JsonProperty("status")
+          TicketStatus status,
+      @JsonProperty("closedAs")
+          Resolution closedAs,
+      @JsonProperty("solution")
+          String solution,
+      @JsonProperty("creationDate")
+          LocalDateTime creationDate,
+      @JsonProperty("closingDate")
+          LocalDateTime closingDate
+  ) {
     this.id = id;
     this.subject = subject;
     this.status = status;
