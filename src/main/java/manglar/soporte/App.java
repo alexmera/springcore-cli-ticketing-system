@@ -2,7 +2,6 @@ package manglar.soporte;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.MissingCommandException;
-import com.beust.jcommander.ParameterException;
 import java.util.Scanner;
 import manglar.soporte.commands.CommandExecutor;
 import manglar.soporte.config.AppConfig;
@@ -44,10 +43,11 @@ public class App {
         commander.parse(input.split(" "));
         executor.execute(commander.getParsedCommand());
       } catch (MissingCommandException e) {
-        System.out.println("Invalid command, try again");
+        System.err.println("Invalid command, try again");
         commander.usage();
-      } catch (ParameterException pe) {
-        System.out.println(pe.getMessage());
+      } catch (Exception e) {
+        System.err.println(e.getMessage());
+        commander.usage();
       }
     }
     // or explicit close method

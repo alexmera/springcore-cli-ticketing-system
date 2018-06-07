@@ -2,14 +2,19 @@ package manglar.soporte.repositories;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import manglar.soporte.events.CurrentMaxTicketIdEvent;
 import manglar.soporte.model.Ticket;
 import manglar.soporte.model.value.TicketValue;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 
 public class TicketPersistedDao implements TicketDao {
 
@@ -17,9 +22,30 @@ public class TicketPersistedDao implements TicketDao {
 
   private ObjectMapper objectMapper;
 
-  public TicketPersistedDao(ConcurrentMap<Long, String> persistenceMap, ObjectMapper objectMapper) {
+  private ApplicationEventPublisher eventPublisher;
+
+  public TicketPersistedDao(
+      ConcurrentMap<Long, String> persistenceMap,
+      ObjectMapper objectMapper,
+      ApplicationEventPublisher eventPublisher
+  ) {
     this.persistenceMap = persistenceMap;
     this.objectMapper = objectMapper;
+    this.eventPublisher = eventPublisher;
+  }
+
+  @EventListener
+  public void contextRefreshed(ContextRefreshedEvent event) {
+    System.out.println("TicketPersistedDao:contextRefreshed");
+    System.out.println(event);
+    List<Long> ids = Arrays.asList(persistenceMap.keySet().toArray(new Long[]{}));
+    Optional<Long> maxId = ids.stream().reduce(Long::max);
+    CurrentMaxTicketIdEvent maxIdEvent = new CurrentMaxTicketIdEvent(
+        this,
+        maxId.orElse(0L)
+    );
+    eventPublisher.publishEvent(maxIdEvent);
+    System.out.println("Event CurrentMaxTicketIdEvent sent!!");
   }
 
   @Override
