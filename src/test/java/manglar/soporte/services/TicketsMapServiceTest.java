@@ -116,7 +116,7 @@ class TicketsMapServiceTest {
     Ticket ticket = service.close(1L, Resolution.NOT_SOLVED);
 
     assertEquals(TicketStatus.CLOSED, ticket.getStatus());
-    assertEquals(Resolution.NOT_SOLVED, ticket.getClosedAs());
+    assertEquals(Resolution.NOT_SOLVED, ticket.getClosedAs().get());
   }
 
   @Test
@@ -124,7 +124,7 @@ class TicketsMapServiceTest {
     Ticket ticket = service.close(1L, Resolution.SOLVED, "Solution");
 
     assertEquals(TicketStatus.CLOSED, ticket.getStatus());
-    assertEquals(Resolution.SOLVED, ticket.getClosedAs());
+    assertEquals(Resolution.SOLVED, ticket.getClosedAs().get());
     assertEquals("Solution", ticket.getSolution().get());
   }
 
